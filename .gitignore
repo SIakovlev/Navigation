@@ -1,6 +1,9 @@
 # ignore log files
 **/logs
+
 # ignore numerical data files
 **/results
-**/__pycache__
 *.dat
+
+# ignore python cache files
+**/__pycache__

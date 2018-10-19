@@ -10,18 +10,25 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class ReplayBuffer:
 
-    """
-    Short term memory buffer
-    Data is sampled all at once and gets removed from memory
-    """
+    def __init__(self, params):
 
-    def __init__(self, buffer_size, batch_size, seed):
+        buffer_size = params['buffer_size']
+        batch_size = params['batch_size']
+        mode = params['mode']
+
         self.__buffer_size = buffer_size
         self.__batch_size = batch_size
-        #random.seed(seed)
+        self.__mode = mode
+
         self.__experience = namedtuple("Experience", field_names=["state", "action", "reward", "next_state", "done"])
-        self.__memory_buffer = []
         self.__memory = SumTree(buffer_size)
+        self.__memory_buffer = []
+
+    def get_batch_size(self):
+        return self.__batch_size
+
+    def is_ready(self):
+        return len(self) >= self.__batch_size
 
     def add(self, state, action, reward, next_state, done):
         self.__memory_buffer.append(self.__experience(state, action, reward, next_state, done))
@@ -35,22 +42,24 @@ class ReplayBuffer:
         indices = []
         probs = []
 
-        if mem_len:
-            segment = self.__memory.total() / mem_len
-            for i in range(mem_len):
-                #s = random.uniform(segment * i, segment * (i + 1))
-                s = random.uniform(0, self.__memory.total())
-                idx, p, e = self.__memory.get(s)
-                experiences.append(e)
-                indices.append(idx)
-                probs.append(p/self.__memory.total())
+        if self.__mode['PER']:
+            if mem_len:
+                segment = self.__memory.total() / mem_len
+                for i in range(mem_len):
+                    #s = random.uniform(segment * i, segment * (i + 1))
+                    s = random.uniform(0, self.__memory.total())
+                    idx, p, e = self.__memory.get(s)
+                    experiences.append(e)
+                    indices.append(idx)
+                    probs.append(p/self.__memory.total())
 
         for e in self.__memory_buffer:
             # Add experience to the buffer and record its index
-            idx = self.__memory.add(0.0, e) # Default value for p is 0
             experiences.append(e)
-            indices.append(idx)
-            probs.append(1/len(self))
+            if self.__mode['PER']:
+                idx = self.__memory.add(0.0, e)  # Default value for p is 0
+                indices.append(idx)
+                probs.append(1/len(self))
 
         self.__memory_buffer.clear()
 

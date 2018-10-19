@@ -1,24 +1,24 @@
-import random
-import torch
-import numpy as np
-
+from pprint import pprint
+import json
 import trainer
 import matplotlib as mpl
 mpl.use('TkAgg')  # Mac OS specific
 
 
-def main():
+def main(**kwargs):
+    # Parse JSON settings file
+    general_params = kwargs['general_params']
 
-    torch.manual_seed(0)
-    torch.cuda.manual_seed_all(0)
-    random.seed(0)
-    np.random.seed(0)
-    torch.set_default_tensor_type('torch.FloatTensor')
+    num_of_episodes = general_params['num_of_episodes']
 
-    t = trainer.Trainer()
-    t.train(50, 1000)
-    #t.test(3, checkpoint_path='../results/checkpoint_dqn.pth')
+    t = trainer.Trainer(kwargs)
+    t.train(num_of_episodes=num_of_episodes)
+    # t.test(3, checkpoint_filename='../results/checkpoint_dqn.pth')
 
 
 if __name__ == '__main__':
-    main()
+
+    with open('../settings.json') as settings:
+        params = json.load(settings)
+
+    main(**params)
