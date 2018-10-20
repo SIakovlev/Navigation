@@ -59,7 +59,7 @@ All project settings are stored in JSON file: `settings.json`. It is divided int
 
 **Idea**. Use neural network for Q-value function approximation as `state` -> `action` mapping with the following loss function minimised:
 
-![equation](http://latex.codecogs.com/gif.latex?MSE%28r_%7Bt&plus;1%7D&plus;%5Cgamma%20Q%5Et%28s_%7Bt&plus;1%7D%2C%20%5Carg%5Cmax_%7Ba%7DQ%28s_%7Bt%7D%2C%20a%29%29-Q%28s_%7Bt%7D%2C%20a_%7Bt%7D%29%29)
+![equation](http://latex.codecogs.com/gif.latex?MSE%28r_%7Bt&plus;1%7D&plus;%5Cgamma%20Q%5Et%28s_%7Bt&plus;1%7D%2C%20%5Carg%5Cmax_%7Ba%7DQ%28s_%7Bt&plus;1%7D%2C%20a%29%29-Q%28s_%7Bt%7D%2C%20a_%7Bt%7D%29%29)
 
 Implementation of both DQN and DDQN can be found in file `agent.py`:
 
@@ -96,7 +96,9 @@ Based on experimental evidence form the original paper ([link](https://arxiv.org
 
 #### Prioritised Replay
 
-**Idea**. For memory replay, the agent collects tuples of `(state, reward, next_state, action, done)` and reuses them for future learning. In case of prioritised replay the agent has to assign priority to each tuple, corresponding to their contribution to learning. After that these tuples can be reused based on their priorities, leading to more efficient learning.
+**Idea**. For memory replay, the agent collects tuples of `(state, reward, next_state, action, done)` and reuses them for future learning. In case of prioritised replay the agent has to assign priority to each tuple, corresponding to their contribution to learning. After that, these tuples are reused based on their priorities, leading to more efficient learning.
+
+The most challenging part here is the data structure that is fast for search and sampling. The solution was found [here](https://jaromiru.com/2016/11/07/lets-make-a-dqn-double-learning-and-prioritized-experience-replay/) where a sum tree was suggested as a good choice. It allows accessing and sampling data in logarithmic time `O(log N)`. The implementation was taken from the same source and adjusted for this particular use case.
 
 ### Results
 
