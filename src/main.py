@@ -10,10 +10,13 @@ def main(**kwargs):
     general_params = kwargs['general_params']
 
     num_of_episodes = general_params['num_of_episodes']
+    mode = general_params['mode']
 
     t = trainer.Trainer(kwargs)
-    t.train(num_of_episodes=num_of_episodes)
-    # t.test(3, checkpoint_filename='../results/checkpoint_dqn.pth')
+    if mode['train']:
+        t.train(num_of_episodes=num_of_episodes)
+    else:
+        t.test(checkpoint_filename='checkpoint_2018-10-20_15-21.pth', time_span=3)
 
 
 if __name__ == '__main__':

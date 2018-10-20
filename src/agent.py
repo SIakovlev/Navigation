@@ -68,7 +68,7 @@ class Agent():
         if not self.__t:
             if self.__memory.is_ready():
                 experiences = self.__memory.sample()
-                self.__update(experiences, self.b, self.a, self.e, self.tau)
+                self.__update(experiences)
 
     def choose_action(self, state, mode='train'):
         # state should be transformed to a tensor
@@ -79,9 +79,9 @@ class Agent():
                 with torch.no_grad():
                     actions = self.__qnetwork_local(state)
                 self.__qnetwork_local.train()
-                return np.argmax(actions.cpu().data.numpy()), actions
+                return np.argmax(actions.cpu().data.numpy())
             else:
-                return np.random.choice(np.arange(self.__action_size)), 0
+                return np.random.choice(np.arange(self.__action_size))
         elif mode == 'test':
             state = torch.from_numpy(state).float().unsqueeze(0).to(device)
             self.__qnetwork_local.eval()
@@ -92,7 +92,7 @@ class Agent():
         else:
             print("Invalid mode value")
 
-    def __update(self, experiences, beta, alpha, e, tau):
+    def __update(self, experiences):
         states, actions, rewards, next_states, dones, indices, probs = experiences
         # Compute and minimise the loss
         self.__optimiser.zero_grad()
@@ -111,13 +111,10 @@ class Agent():
 
         # Calculate weights and normalise
         if probs:
-            weights = [(prob * len(self.__memory)) ** (-beta) for prob in probs]
+            weights = [(prob * len(self.__memory)) ** (-self.b) for prob in probs]
             weights = np.array([w / max(weights) for w in weights]).reshape((-1, 1))
         else:
             weights = np.ones(loss.shape, dtype=np.float)
-
-        if indices:
-            self.__memory.update(indices, list(loss.detach().numpy().squeeze() ** alpha + e))
 
         # Calculate weighted loss
         weighted_loss = torch.mean(torch.from_numpy(weights).float() * loss)
@@ -125,7 +122,10 @@ class Agent():
 
         self.__optimiser.step()
 
-        self.__soft_update(self.__qnetwork_local, self.__qnetwork_target, tau)
+        if indices:
+            self.__memory.update(indices, list(loss.detach().numpy().squeeze() ** self.a + self.e))
+
+        self.__soft_update(self.__qnetwork_local, self.__qnetwork_target, self.tau)
 
         self.agent_loss = weighted_loss.detach().numpy().squeeze()
 

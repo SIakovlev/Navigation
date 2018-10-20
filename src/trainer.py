@@ -3,7 +3,7 @@ import random
 import numpy as np
 import sys
 import torch
-from dqn_agent import Agent
+from agent import Agent
 from unity_env import UnityEnv
 from collections import deque
 import datetime
@@ -52,7 +52,9 @@ class Trainer:
     def train(self, num_of_episodes):
 
         reward_window = deque(maxlen=100)
-        #self.eps_decay = np.exp(np.log(self.final_eps / self.max_eps) / (0.8 * num_of_episodes))
+
+        self.eps_decay = (self.final_eps / self.max_eps) ** (1 / (0.2 * num_of_episodes))
+
         reward_matrix = np.zeros((num_of_episodes, 300))
 
         for episode_i in range(1, num_of_episodes):
@@ -62,14 +64,14 @@ class Trainer:
             total_reward = 0
             total_loss = 0
 
-            self.agent.eps = self.max_eps/(episode_i + 1)
-            #self.agent_eps *= self.eps_decay
+            #self.agent.eps = self.max_eps/(episode_i + 1)
+            self.agent.eps *= self.eps_decay
 
-            self.agent.b = 1 - np.exp(-self.b_decay * episode_i)
+            #self.agent.b = 1 - np.exp(-self.b_decay * episode_i)
 
             counter = 0
             while not done:
-                action, actions = self.agent.choose_action(state)
+                action = self.agent.choose_action(state)
                 next_state, reward, done, _ = self.env.step(action)
                 self.agent.step(state, action, reward, next_state, done)
                 state = next_state
@@ -96,14 +98,16 @@ class Trainer:
                          format(episode_i, total_reward, np.mean(reward_window),
                                 total_loss, self.agent.eps, self.agent.b, self.agent.learning_rate))
 
+            self.agent.learning_rate *= self.learning_rate_decay
+            self.agent.set_learning_rate(self.agent.learning_rate)
+
             if episode_i % 100 == 0:
-                self.agent.learning_rate *= self.learning_rate_decay
 
                 avg_reward = np.mean(np.array(reward_window))
                 print("\rEpisode: {}\tAverage total reward: {:.2f}".format(episode_i, avg_reward))
                 self.avg_rewards.append(avg_reward)
 
-                if avg_reward >= 15.0:
+                if avg_reward >= 13.0:
                     print('\nEnvironment solved in {:d} episodes!\tAverage Score: {:.2f}'.format(episode_i - 100,
                                                                                                  avg_reward))
                     torch.save(self.agent.get_qlocal().state_dict(), self.model_path + 'checkpoint_{}.pth'.format(

@@ -2,8 +2,14 @@
 **/logs
 
 # ignore numerical data files
-**/results
+**/data
 *.dat
+
+# ignore app file
+**/banana_app
 
 # ignore python cache files
 **/__pycache__
+
+# ignore .idea
+**/.idea

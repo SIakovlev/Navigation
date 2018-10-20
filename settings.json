@@ -1,37 +1,38 @@
 {
 	"general_params" : {
-		"seed" 					: 0,
-	  	"num_of_episodes" 		: 2000
+		"seed" 									: 0,
+	  "num_of_episodes" 			: 2000,
+	  "mode"									: {"train" : 0, "test" : 1}
 	},
 	"agent_params" : {
-		"learning_mode" 		: {"DQN" : 0, "DDQN" : 1, "DuelingDDQN": 0},
-		"state_size"			: -1,
-		"action_size"			: -1,
-		"eps_initial"		    : 1.0,
-		"learning_rate" 		: 0.001,
-		"gamma" 				: 0.99,
-		"tau" 					: 0.001,
-		"update_period" 		: 4,
-		"a" 					: 1.0,
-		"b" 					: 0.0,
-		"e"						: 1E-6,
-		"buf_params" 			: {"buffer_size" : 100000, "batch_size" : 100, "mode" : {"Normal" : 0, "PER" : 1} },
-		"nn_params"				: {"l1" : [-1, 64], "l2" : [64, 96], "l3" : [96, 96], "l4" : [96, 64], "l5" : [64, -1]}
+		"learning_mode" 				: {"DQN" : 0, "DDQN" : 0, "DuelingDDQN": 1},
+		"state_size"						: -1,
+		"action_size"						: -1,
+		"eps_initial"						: 1.0,
+		"learning_rate" 				: 0.001,
+		"gamma" 								: 0.99,
+		"tau" 									: 0.01,
+		"update_period" 				: 8,
+		"a" 										: 0.0,
+		"b" 										: 0.0,
+		"e"											: 1E-6,
+		"buf_params" 						: {"buffer_size" : 100000, "batch_size" : 100, "mode" : {"Normal" : 0, "PER" : 1} },
+		"nn_params"							: {"l1" : [-1, 64], "l2" : [64, 128], "l3" : [128, 128], "l4" : [128, 32], "l5" : [32, -1]}
 	},
 	"trainer_params" : {
-		"learning_rate_decay" 	: 0.83,
-		"max_eps" 				: 1.0,
-        "final_eps" 			: 0.01,
-        "eps_decay" 			: 0.99,
-		"b_decay"				: 0.003,
-        "results_path"			: "../results/",
-        "model_path"			: "../models/"
+		"learning_rate_decay" 	: 0.999,
+		"max_eps" 							: 1.0,
+    "final_eps" 						: 0.01,
+    "eps_decay" 						: 0.99,
+		"b_decay"								: 0.003,
+    "results_path"					: "../results/",
+    "model_path"						: "../models/"
 	},
 	"env_params" : {
-		"path"					: "../banana_app/Banana.app",
-		"seed"					: 0,
-		"worker_id"				: 0,
-		"visual_mode"			: false,
-		"multiagent_mode"		: false
+		"path"									: "../banana_app/Banana.app",
+		"seed"									: 0,
+		"worker_id"							: 0,
+		"visual_mode"						: false,
+		"multiagent_mode"				: false
 	}
 }

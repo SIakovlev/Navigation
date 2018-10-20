@@ -42,24 +42,24 @@ class ReplayBuffer:
         indices = []
         probs = []
 
-        if self.__mode['PER']:
-            if mem_len:
-                segment = self.__memory.total() / mem_len
-                for i in range(mem_len):
-                    #s = random.uniform(segment * i, segment * (i + 1))
-                    s = random.uniform(0, self.__memory.total())
-                    idx, p, e = self.__memory.get(s)
-                    experiences.append(e)
-                    indices.append(idx)
-                    probs.append(p/self.__memory.total())
+        # if self.__mode['PER']:
+        if mem_len:
+            #segment = self.__memory.total() / mem_len
+            for i in range(mem_len):
+                #s = random.uniform(segment * i, segment * (i + 1))
+                s = random.uniform(0, self.__memory.total())
+                idx, p, e = self.__memory.get(s)
+                experiences.append(e)
+                indices.append(idx)
+                probs.append(p/self.__memory.total())
 
         for e in self.__memory_buffer:
             # Add experience to the buffer and record its index
             experiences.append(e)
-            if self.__mode['PER']:
-                idx = self.__memory.add(0.0, e)  # Default value for p is 0
-                indices.append(idx)
-                probs.append(1/len(self))
+            #if self.__mode['PER']:
+            idx = self.__memory.add(0.0, e)  # Default value for p is 0
+            indices.append(idx)
+            probs.append(1/len(self))
 
         self.__memory_buffer.clear()
 
