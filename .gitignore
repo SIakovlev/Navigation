@@ -2,8 +2,8 @@
 **/logs
 
 # ignore numerical data files
-**/data
-*.dat
+# **/data
+# *.dat
 
 # ignore app file
 **/banana_app

@@ -16,7 +16,7 @@ def main(**kwargs):
     if mode['train']:
         t.train(num_of_episodes=num_of_episodes)
     else:
-        t.test(checkpoint_filename='checkpoint_2018-10-20_15-21.pth', time_span=3)
+        t.test(checkpoint_filename='checkpoint.pth', time_span=3)
 
 
 if __name__ == '__main__':
