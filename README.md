@@ -97,3 +97,9 @@ Based on experimental evidence form the original paper ([link](https://arxiv.org
 #### Prioritised Replay
 
 **Idea**. For memory replay, the agent collects tuples of `(state, reward, next_state, action, done)` and reuses them for future learning. In case of prioritised replay the agent has to assign priority to each tuple, corresponding to their contribution to learning. After that these tuples can be reused based on their priorities, leading to more efficient learning.
+
+### Results
+
+#### Algorithms comparison
+
+#### Visualisation of agent's behaviour
