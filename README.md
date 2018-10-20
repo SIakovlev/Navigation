@@ -125,6 +125,10 @@ One more modification that seemed to work very well was slowly reducing learning
 
 ### Results
 
+The best run data can be found in:
+ - `results` folder contains [log file](https://github.com/SIakovlev/Navigation/blob/master/results/run_doubleDDQN_replay_buf.log) with detailed agent results after each episode. It also contains the hyperparameters used. 
+ - `models` folder contains [checkpoint file](https://github.com/SIakovlev/Navigation/blob/master/models/checkpoint.pth).
+ 
 #### Algorithms comparison
 
 The follwing graph demonstrates the average reward (over 100 episodes) for different algorithms discussed above (and their combinations):
@@ -150,3 +154,8 @@ I have made two separate runs with the same parameters but in the first case I k
 The following gif file shows one agent run where it manages to collect 20 bananas:
 
 ![Navigation](https://github.com/SIakovlev/Navigation/blob/master/results/navigation.gif)
+
+#### Possible improvements
+
+- Use Noisy Nets instead of e-greedy policy. This modification shows improvements over conventional e-greedy learning and reduces the number of hyperparameters to tune. 
+- Reward shaping. When the agent is trained enough getting 2nd banana after the 1st one is expected and almost always happens, whereas getting 21st banana after 20th is the achievement. Therefore, the agent could get higher reward in case of improving its result with respect to the expected one.
