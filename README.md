@@ -1,6 +1,8 @@
 # Navigation
 Deep Reinforcement Learning Nanodegree Project 1
 
+![Navigation](https://github.com/SIakovlev/Navigation/blob/master/results/navigation_short.gif)
+
 ### Project description
 
 For this project, the task is to train an agent to navigate in a large, square world, while collecting yellow bananas, and avoiding blue bananas. A reward of `+1` is provided for collecting a yellow banana, and a reward of `-1` is provided for collecting a blue banana. Thus, the goal is to collect as many yellow bananas as possible while avoiding blue bananas.
@@ -16,6 +18,13 @@ For this project, the task is to train an agent to navigate in a large, square w
 - **Solution criteria**: the environment is considered as solved when the agent gets an average score of **+13 over 100 consecutive episodes**.
 
 ### Getting started
+
+#### Configuration
+
+Configuration I used for this project:
+
+- OS: Mac OS 10.14 Mojave
+- i7-8800H, 32GB, Radeon Pro 560X 4GB
 
 #### Structure
 
@@ -48,12 +57,23 @@ All project settings are stored in JSON file: `settings.json`. It is divided int
 
 ### Implementation details
 
+The following four algorithms were implemented and tested on this environment.
 
 #### DQN
 
 **Idea**. Use neural network for Q-value function approximation as `state` -> `action` mapping with the following loss function minimised:
 
 ![equation](http://latex.codecogs.com/gif.latex?MSE%28r_%7Bt&plus;1%7D&plus;%5Cgamma%20%5Cmax_%7Ba%7DQ%5Et%28s_%7Bt&plus;1%7D%2C%20a%29-Q%28s_%7Bt%7D%2C%20a_%7Bt%7D%29%29)
+
+Neural network architecture:
+
+| Layer   | (in, out)          | Activation|
+|---------|--------------------|-----------|
+| Layer 1 | (`state_size`, 64) | `relu`|
+| Layer 2 | (64, 128) | `relu` |
+| Layer 3 | (128, 128)| `relu` |
+| Layer 4 | (128, 32) | `relu` |
+| Layer 5 | (32, `action_size`)| - |
 
 #### Double DQN (DDQN)
 
@@ -93,15 +113,40 @@ The dueling architecture is implemented in `q_network.py` and aggregation step i
 
 Based on experimental evidence form the original paper ([link](https://arxiv.org/abs/1511.06581)), this should improve stability and learning rate of agents. 
 
-
 #### Prioritised Replay
 
 **Idea**. For memory replay, the agent collects tuples of `(state, reward, next_state, action, done)` and reuses them for future learning. In case of prioritised replay the agent has to assign priority to each tuple, corresponding to their contribution to learning. After that, these tuples are reused based on their priorities, leading to more efficient learning.
 
-The most challenging part here is the data structure that is fast for search and sampling. The solution was found [here](https://jaromiru.com/2016/11/07/lets-make-a-dqn-double-learning-and-prioritized-experience-replay/) where a sum tree was suggested as a good choice. It allows accessing and sampling data in logarithmic time `O(log N)`. The implementation was taken from the same source and adjusted for this particular use case.
+The most challenging part here is the data structure that is fast for search and sampling. The solution was found [here](https://jaromiru.com/2016/11/07/lets-make-a-dqn-double-learning-and-prioritized-experience-replay/) where a sum tree was suggested as a good choice. It allows accessing and sampling data in logarithmic time `O(log N)`. The implementation was taken from the same source and adjusted for this particular use case (see `sum_tree.py`).
+
+#### Additional modifications
+
+One more modification that seemed to work very well was slowly reducing learning rate during agent training. It lead to a higher average score (see next section where results are discussed). To control learning rate decay, one more parameter `learning_rate_decay` was introduced (see `settings.json`).
 
 ### Results
 
 #### Algorithms comparison
 
+The follwing graph demonstrates the average reward (over 100 episodes) for different algorithms discussed above (and their combinations):
+
+![Comparison](https://github.com/SIakovlev/Navigation/blob/master/results/comparison.png)
+
+The parameters for these runs remained the same and can be found in `settings.json`.
+
+Several observations can be made:
+
+- Prioritised replay buffer does not affect algorithm performance for this specific environment. Moreover, in some runs I have observed even worse performance (by less than 10%). A replay buffer with uniform choice seems to be enough for this task.
+- Double DDQN allows to get the fastest reward collection and get 13 points (black solid line on the graph) in about 200-250 episodes. This can also be tuned by adjusting the values of `epsilon`, `tau` (target network update time constant) and `learning rate`).
+- All algorithms allow getting over 16 points on average in less than 1800 episodes. This satisfied the solution criteria. 
+
+Another interesting effect can be seen from the graph below:
+
+![The effect of decreasing learning rate](https://github.com/SIakovlev/Navigation/blob/master/results/lr_decreasing_effect.png)
+
+I have made two separate runs with the same parameters but in the first case I kept learning rate fixed, whereas in the second case I decreased it after each episode by about 20%. This graph clearly shows how decreasing the learning rate helps agent to get more reward. The possible explanation is that lowering learning rate leads to smaller changes in Q network at later steps which helps convergence.
+
 #### Visualisation of agent's behaviour
+
+The following gif file shows one agent run where it manages to collect 20 bananas:
+
+![Navigation](https://github.com/SIakovlev/Navigation/blob/master/results/navigation.gif)
