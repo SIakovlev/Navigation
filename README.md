@@ -29,7 +29,7 @@ All project files are stored in `/src` folder. All project settings are stored i
   - [Win x32](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86.zip)
   - [Win x64](https://s3-us-west-1.amazonaws.com/udacity-drlnd/P1/Banana/Banana_Windows_x86_64.zip)
 
-  - Open `settings.json` and specify the relative path to the application file in `"path"` inside of `"env_params"`.
+ - Open `settings.json` and specify the relative path to the application file in `"path"` inside of `"env_params"`.
   
 #### Settings
 
