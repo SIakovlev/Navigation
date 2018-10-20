@@ -21,8 +21,7 @@ For this project, the task is to train an agent to navigate in a large, square w
 
 #### Configuration
 
-Configuration I used for this project:
-
+PC configuration used for this project:
 - OS: Mac OS 10.14 Mojave
 - i7-8800H, 32GB, Radeon Pro 560X 4GB
 
