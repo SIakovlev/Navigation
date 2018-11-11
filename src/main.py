@@ -2,7 +2,7 @@ from pprint import pprint
 import json
 import trainer
 import matplotlib as mpl
-mpl.use('TkAgg')  # Mac OS specific
+# mpl.use('TkAgg')  # Mac OS specific
 
 
 def main(**kwargs):

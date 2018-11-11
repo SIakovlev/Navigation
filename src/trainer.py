@@ -9,6 +9,10 @@ from collections import deque
 import datetime
 import logging
 from pprint import pprint
+import os
+
+if not os.path.exists('../logs'):
+    os.makedirs('../logs')
 
 for handler in logging.root.handlers[:]:
     logging.root.removeHandler(handler)

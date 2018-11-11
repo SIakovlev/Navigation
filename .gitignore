@@ -7,6 +7,7 @@
 
 # ignore app file
 **/banana_app
+**/Banana_Linux
 
 # ignore python cache files
 **/__pycache__

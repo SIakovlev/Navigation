@@ -29,7 +29,7 @@
     "model_path"			: "../models/"
 	},
 	"env_params" : {
-		"path"			: "../banana_app/Banana.app",
+		"path"			: "../Banana_Linux/Banana.x86_64",
 		"seed"			: 0,
 		"worker_id"		: 0,
 		"visual_mode"		: false,
